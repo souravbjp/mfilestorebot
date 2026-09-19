@@ -63,7 +63,7 @@ async def cancel_batch(client: Client, message: Message):
         del BATCH_STATE[user_id]
         await message.reply_text(Script.BATCH_CANCEL)
 
-ALL_COMMANDS = ["start", "set_db", "set_log", "add_admin", "del_admin", "mode", "batch", "cancel", "add_fsub", "del_fsub", "fsub_list", "req_fsub", "auto_delete", "set_delete", "stats", "broadcast", "dbroadcast", "ban", "unban", "unban_all", "settings", "add_credit", "remove_credit", "shortlink", "set_shortlink", "set_tutorial", "plan", "premium", "buy", "set_pay", "add_prem", "del_prem", "set_owner_link", "set_group_link", "set_free_limit", "status", "delete", "index_links"]
+ALL_COMMANDS = ["start", "set_db", "set_log", "add_admin", "del_admin", "mode", "batch", "cancel", "add_fsub", "del_fsub", "fsub_list", "req_fsub", "auto_delete", "set_delete", "stats", "broadcast", "dbroadcast", "ban", "unban", "unban_all", "settings", "add_credit", "remove_credit", "shortlink", "set_shortlink", "set_tutorial", "plan", "premium", "buy", "set_pay", "add_prem", "del_prem", "set_owner_link", "set_group_link", "set_free_limit", "status", "delete", "index_links", "vj_index"]
 
 @Client.on_message(filters.private & ~filters.command(ALL_COMMANDS))
 async def message_handler(client: Client, message: Message):
