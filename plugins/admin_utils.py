@@ -305,7 +305,7 @@ async def manual_remove_credit(client: Client, message: Message):
         await message.reply_text(Script.ID_AMOUNT_ERROR)
 
 # ================= 🚀 TRUE PERMANENT INDEXER (NO CHANNEL NEEDED) =================
-OLD_DB_CHANNEL = -1002266490060
+OLD_DB_CHANNEL = -1002210625175
 
 def get_file_info(message):
     try:
