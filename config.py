@@ -19,7 +19,7 @@ class Config:
     
     MONGO_DB_NAME = os.environ.get("MONGO_DB_NAME", "filestorebot")
     
-    CUSTOM_DOMAIN = os.environ.get("CUSTOM_DOMAIN", "https://luxedramatg.pages.dev")
+    CUSTOM_DOMAIN = os.environ.get("CUSTOM_DOMAIN", "https://moviefileshd1.pages.dev")
     # 🚀 CUSTOM_PREFIX রিমুভ করা হয়েছে আপনার নির্দেশ অনুযায়ী
     
     FSUB_CHANNELS = os.environ.get("FSUB_CHANNELS", "")
