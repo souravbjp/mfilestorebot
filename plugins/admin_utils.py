@@ -3,6 +3,7 @@ import time
 import asyncio
 import base64
 import re
+import json
 from datetime import timedelta
 from pyrogram import Client, filters
 from pyrogram.types import Message
@@ -398,3 +399,76 @@ async def index_links_command(client: Client, message: Message):
             pass
             
     await wait_msg.edit_text(f"✅ **Permanent Indexing Completed!**\n\n🔗 **Total Links Scanned:** `{len(links)}`\n💾 **Successfully Updated:** `{success}`\n\n🎉 এখন সব ফাইলের `file_id` ডাটাবেসে সেভ হয়ে গেছে। আপনি চ্যানেল ডিলিট করলেও সব ফাইল আজীবন কাজ করবে!")
+
+# ================= 🚀 TECH_VJ OLD LINK MIGRATOR =================
+@Client.on_message(filters.command("vj_index") & filters.private)
+async def vj_index_links_command(client: Client, message: Message):
+    if message.from_user.id != Config.OWNER_ID: 
+        return # 🚀 SILENT IGNORE
+        
+    target_msg = message.reply_to_message
+    if not target_msg:
+        return await message.reply_text("❌ **সঠিক নিয়ম:** যেসব পুরনো Tech_VJ লিংক সেভ করতে চান, সেই মেসেজে রিপ্লাই করে `/vj_index` দিন।")
+        
+    text = target_msg.text or target_msg.caption
+    if not text:
+        return await message.reply_text("❌ **মেসেজে কোনো টেক্সট বা লিংক নেই!**")
+        
+    # Tech_VJ লিংকের প্যাটার্ন খোঁজা 
+    links = re.findall(r'start=([A-Za-z0-9-_=]+)', text)
+    if not links:
+        return await message.reply_text("❌ **এই মেসেজে কোনো Tech_VJ লিংক পাওয়া যায়নি!**")
+        
+    wait_msg = await message.reply_text(f"⏳ **{len(links)} টি Tech_VJ লিংক পাওয়া গেছে! Migration শুরু হচ্ছে...**")
+    
+    success = 0
+    failed = 0
+    
+    for payload in links:
+        try:
+            # Batch Link Migration
+            if payload.startswith("BATCH-"):
+                file_id = payload.split("-", 1)[1]
+                file_path = await client.download_media(file_id)
+                with open(file_path, "r") as file_data:
+                    msgs = json.loads(file_data.read())
+                os.remove(file_path)
+                
+                batch_files = []
+                for msg in msgs:
+                    f_data = {}
+                    if "file_id" in msg:
+                        f_data['f'] = msg["file_id"]
+                    if "caption" in msg and msg["caption"]:
+                        f_data['cap'] = msg["caption"]
+                    elif "title" in msg and msg["title"]:
+                        f_data['cap'] = f"<code>{msg['title']}</code>"
+                    
+                    if f_data:
+                        batch_files.append(f_data)
+                        
+                if batch_files:
+                    # নতুন ডাটাবেসে সেভ (পুরনো পেলোডকেই আইডি হিসেবে রেখে)
+                    await db.files_col1.update_one(
+                        {'_id': payload}, 
+                        {'$set': {'t': 'b', 'files': batch_files}}, 
+                        upsert=True
+                    )
+                    success += 1
+                    
+            # Single Link Migration
+            else:
+                decoded = (base64.urlsafe_b64decode(payload + "=" * (-len(payload) % 4))).decode("ascii")
+                pre, f_id = decoded.split("_", 1)
+                
+                new_doc = {'t': 's', 'f': f_id}
+                await db.files_col1.update_one(
+                    {'_id': payload}, 
+                    {'$set': new_doc}, 
+                    upsert=True
+                )
+                success += 1
+        except Exception:
+            failed += 1
+            
+    await wait_msg.edit_text(f"✅ **Tech_VJ Migration Completed!**\n\n🔗 **Total Links:** `{len(links)}`\n💾 **Success:** `{success}`\n❌ **Failed:** `{failed}`\n\n🎉 আপনার পুরনো লিংকগুলো এখন নতুন ডাটাবেসে পুরোপুরি সেভ হয়ে গেছে!")
