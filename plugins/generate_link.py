@@ -32,10 +32,9 @@ def get_file_info(message):
     return None, None, text_content
 
 def get_msg_id(message: Message):
-    if hasattr(message, "forward_origin") and message.forward_origin and hasattr(message.forward_origin, 'message_id'):
+    # 🚀 FIX: Updated to strictly use forward_origin to prevent Pyrogram deprecation warnings
+    if getattr(message, "forward_origin", None) and getattr(message.forward_origin, 'message_id', None):
         return message.forward_origin.message_id
-    elif hasattr(message, "forward_from_message_id") and message.forward_from_message_id:
-        return message.forward_from_message_id
         
     if message.text:
         match = re.search(r"t\.me/(?:c/)?(?:[a-zA-Z0-9_]+|-?\d+)/(\d+)", message.text)
@@ -81,7 +80,6 @@ async def message_handler(client: Client, message: Message):
         return
 
     settings = await db.get_settings()
-    # 🚀 FIX APPLIED HERE:
     active_db = get_correct_chat_id(settings.get('active_db'))
     if not active_db:
         return await message.reply_text(Script.NO_DB_SET)
@@ -132,7 +130,6 @@ async def message_handler(client: Client, message: Message):
                 else:
                     unique_id = await db.save_batch(first_id, last_id, active_db)
                 
-                # 🚀 FIX: Ghost Link Prevention
                 if not unique_id:
                     return await wait_msg.edit_text("❌ **Database save failed. Please try again.**")
                 
@@ -167,7 +164,6 @@ async def message_handler(client: Client, message: Message):
                 
             unique_id = await db.save_file(db_msg_id, active_db, f_id, f_uniq, cap)
             
-            # 🚀 FIX: Ghost Link Prevention
             if not unique_id:
                 return await wait_msg.edit_text("❌ **Database save failed. Please try again.**")
                 
@@ -202,7 +198,6 @@ async def generate_single_link(client: Client, query):
     msg_id = int(query.data.split("_")[1])
     original_msg = await client.get_messages(query.message.chat.id, msg_id)
     settings = await db.get_settings()
-    # 🚀 FIX APPLIED HERE:
     active_db = get_correct_chat_id(settings.get('active_db'))
     
     wait_msg = await query.message.edit_text(Script.PROCESSING_FILE)
@@ -213,16 +208,13 @@ async def generate_single_link(client: Client, query):
         final_msg_id = None
         forward_chat_id = None
         
-        if hasattr(original_msg, "forward_origin") and original_msg.forward_origin and hasattr(original_msg.forward_origin, 'chat'):
+        # 🚀 FIX: Removed forward_from_chat and forward_from_message_id to fix Pyrogram warnings
+        if getattr(original_msg, "forward_origin", None) and getattr(original_msg.forward_origin, 'chat', None):
             forward_chat_id = original_msg.forward_origin.chat.id
-        elif hasattr(original_msg, "forward_from_chat") and original_msg.forward_from_chat:
-            forward_chat_id = original_msg.forward_from_chat.id
             
         if forward_chat_id and forward_chat_id == active_db:
-            if hasattr(original_msg, "forward_origin") and original_msg.forward_origin and hasattr(original_msg.forward_origin, 'message_id'):
+            if getattr(original_msg.forward_origin, 'message_id', None):
                 final_msg_id = original_msg.forward_origin.message_id
-            elif hasattr(original_msg, "forward_from_message_id") and original_msg.forward_from_message_id:
-                final_msg_id = original_msg.forward_from_message_id
         
         if not final_msg_id:
             copied_msg = await original_msg.copy(chat_id=active_db)
@@ -230,7 +222,6 @@ async def generate_single_link(client: Client, query):
             
         unique_id = await db.save_file(final_msg_id, active_db, file_id, file_unique_id, caption)
         
-        # 🚀 FIX: Ghost Link Prevention
         if not unique_id:
             return await wait_msg.edit_text("❌ **Database save failed. Please try again.**")
             
