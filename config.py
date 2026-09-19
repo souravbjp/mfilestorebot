@@ -10,8 +10,8 @@ class Config:
     
     OWNER_ID = 7023006442
     
-    DB_CHANNEL = int(os.environ.get("DB_CHANNEL", -1002266490060))
-    LOG_CHANNEL = int(os.environ.get("LOG_CHANNEL", -1004379104913))
+    DB_CHANNEL = int(os.environ.get("DB_CHANNEL", -1002210625175))
+    LOG_CHANNEL = int(os.environ.get("LOG_CHANNEL", -1002162133511))
     
     MONGO_URI_1 = os.environ.get("MONGO_URI_1", "your_primary_mongodb_url")
     MONGO_URI_2 = os.environ.get("MONGO_URI_2", "") 
