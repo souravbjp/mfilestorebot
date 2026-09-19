@@ -414,8 +414,8 @@ async def vj_index_links_command(client: Client, message: Message):
     if not text:
         return await message.reply_text("❌ **মেসেজে কোনো টেক্সট বা লিংক নেই!**")
         
-    # Tech_VJ লিংকের প্যাটার্ন খোঁজা 
-    links = re.findall(r'start=([A-Za-z0-9-_=]+)', text)
+    # Tech_VJ লিংকের প্যাটার্ন খোঁজা (Blogger & Telegram উভয় লিংকের জন্য)
+    links = re.findall(r'(?:start=|Tech_VJ=)([A-Za-z0-9-_=]+)', text)
     if not links:
         return await message.reply_text("❌ **এই মেসেজে কোনো Tech_VJ লিংক পাওয়া যায়নি!**")
         
