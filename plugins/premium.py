@@ -22,7 +22,7 @@ async def show_premium_plans_cb(client: Client, query: CallbackQuery):
     
     keyboard = [
         [InlineKeyboardButton(Script.BTN_BUY_NOW, callback_data="buy_premium_menu")],
-        [InlineKeyboardButton("❌ ᴄʟᴏsᴇ", callback_data="close_settings")]
+        [InlineKeyboardButton("❌ ᴄʟᴏsᴇ", callback_data="close_data")] # 🚀 FIX: Changed to close_data
     ]
     
     # 🚀 SMART UX FIX: নতুন মেসেজ না পাঠিয়ে আগের মেসেজটিকেই এডিট করবে
@@ -42,7 +42,7 @@ async def plan_command(client: Client, message: Message):
     
     keyboard = [
         [InlineKeyboardButton(Script.BTN_BUY_NOW, callback_data="buy_premium_menu")],
-        [InlineKeyboardButton("❌ ᴄʟᴏsᴇ", callback_data="close_settings")]
+        [InlineKeyboardButton("❌ ᴄʟᴏsᴇ", callback_data="close_data")] # 🚀 FIX: Changed to close_data
     ]
     await message.reply_text(text, reply_markup=InlineKeyboardMarkup(keyboard), parse_mode=ParseMode.HTML)
 
@@ -84,7 +84,7 @@ async def buy_command(client: Client, message: Message):
     if group_link: row.append(InlineKeyboardButton(Script.BTN_GROUP, url=group_link))
     if row: keyboard.append(row)
         
-    keyboard.append([InlineKeyboardButton("❌ ᴄʟᴏsᴇ", callback_data="close_settings")])
+    keyboard.append([InlineKeyboardButton("❌ ᴄʟᴏsᴇ", callback_data="close_data")]) # 🚀 FIX: Changed to close_data
     await message.reply_text(Script.BUY_PREMIUM_MSG, reply_markup=InlineKeyboardMarkup(keyboard), parse_mode=ParseMode.HTML)
 
 
