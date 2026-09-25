@@ -208,7 +208,7 @@ async def generate_single_link(client: Client, query):
         final_msg_id = None
         forward_chat_id = None
         
-        # 🚀 FIX: Removed forward_from_chat and forward_from_message_id to fix Pyrogram warnings
+        # 🚀 FIX: Removed ALL deprecated hasattr/forward_from_chat from the callback function too
         if getattr(original_msg, "forward_origin", None) and getattr(original_msg.forward_origin, 'chat', None):
             forward_chat_id = original_msg.forward_origin.chat.id
             
