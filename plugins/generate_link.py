@@ -155,7 +155,7 @@ async def message_handler(client: Client, message: Message):
     if not file_id:
         db_msg_id = get_msg_id(message)
         if db_msg_id:
-            wait_msg = await message.reply_text(Script.GEN_DB_LINK_WAIT, reply_to_message_id=message.id)
+            wait_msg = await message.reply_text(Script.GEN_DB_LINK_WAIT)
             try:
                 db_msg = await client.get_messages(active_db, db_msg_id)
                 f_id, f_uniq, cap = get_file_info(db_msg)
@@ -181,7 +181,7 @@ async def message_handler(client: Client, message: Message):
                     pass
         return
         
-    wait_msg = await message.reply_text(Script.GEN_LINK_WAIT, reply_to_message_id=message.id)
+    wait_msg = await message.reply_text(Script.GEN_LINK_WAIT)
     existing_file = await db.check_file_exists(file_unique_id)
     if existing_file:
         custom_link = f"{Config.CUSTOM_DOMAIN}?start={existing_file['_id']}"
