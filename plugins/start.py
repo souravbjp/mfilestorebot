@@ -350,7 +350,7 @@ async def handle_verification_check(client: Client, message: Message, user_id: i
             btn_list.append(main_btns)
             
         # 🚀 100% Conversion Masterstroke: Premium Button Added Below Verify Options
-        btn_list.append([InlineKeyboardButton("• ʙᴜʏ ᴘʀᴇᴍɪᴜᴍ (ɴᴏ ᴀᴅs) •", callback_data="buy_premium_menu")])
+        btn_list.append([InlineKeyboardButton("• ʙᴜʏ ᴘʀᴇᴍɪᴜᴍ (ɴᴏ ᴀᴅs) •", callback_data="show_premium_plans")])
             
         btn = InlineKeyboardMarkup(btn_list)
         await wait_msg.delete()
