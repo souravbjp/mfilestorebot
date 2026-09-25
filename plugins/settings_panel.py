@@ -90,7 +90,8 @@ async def settings_callbacks(client: Client, query: CallbackQuery):
         await db.update_settings('verify_duration', times[next_idx])
         
     elif action == "set_sl_cred":
-        creds = [1, 2, 3, 5, 10, 20]
+        # 🚀 FIX: 0 যুক্ত করা হয়েছে যাতে প্রতি ক্লিকে ভেরিফাই করানো যায়
+        creds = [0, 1, 2, 3, 5, 10, 20]
         current = settings.get('bypass_credits', 3)
         next_idx = (creds.index(current) + 1) % len(creds) if current in creds else 0
         await db.update_settings('bypass_credits', creds[next_idx])
